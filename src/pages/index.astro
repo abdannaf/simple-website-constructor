@@ -1,0 +1,16 @@
+---
+import Welcome from '../components/Welcome.astro';
+import About from '../components/About.astro';
+import Layout from '../layouts/Layout.astro';
+import Services from '../components/Services.jsx';
+import Testimonials from '../components/Testimonials.jsx'
+import Portofolio from '../components/Portofolio.jsx'
+---
+
+<Layout>
+	<Welcome />
+	<About/>
+	<Services client:visible />
+	<Testimonials client:visible />
+	<Portofolio client:visible />
+</Layout>
