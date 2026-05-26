@@ -1,130 +1,220 @@
-import { useState, useRef, useCallback } from 'react';
-import { IconArrowLeft, IconArrowRight, IconStar } from '@tabler/icons-react';
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconQuote,
+  IconStarFilled,
+} from "@tabler/icons-react";
 
-const baseUsers = [
-  { photo: "https://i.pravatar.cc/150?img=11", name: "Larem Jemes", role: "Graphic Design", rating: 5, testimonial: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, loctus nec ullamcorper mattis." },
-  { photo: "https://i.pravatar.cc/150?img=12", name: "Johan Mickel", role: "Web Development", rating: 5, testimonial: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, loctus nec ullamcorper mattis." },
-  { photo: "https://i.pravatar.cc/150?img=13", name: "Sarah Connor", role: "UI/UX Designer", rating: 4, testimonial: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, loctus nec ullamcorper mattis." },
-  { photo: "https://i.pravatar.cc/150?img=14", name: "Mike Johnson", role: "Project Manager", rating: 5, testimonial: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, loctus nec ullamcorper mattis." },
+const TESTIMONIALS = [
+  {
+    initials: "BS",
+    name: "Budi Santoso",
+    role: "Pemilik Rumah",
+    project: "Residential",
+    rating: 5,
+    testimonial:
+      "Hasil pengerjaannya rapi dan sesuai ekspektasi. Yang paling saya suka, progress selalu dijelaskan jadi tidak perlu menebak-nebak.",
+  },
+  {
+    initials: "AP",
+    name: "Andi Pratama",
+    role: "Owner Cafe",
+    project: "Renovation",
+    rating: 5,
+    testimonial:
+      "Timeline jelas dari awal. Renovasi cafe selesai tepat waktu dan detail finishing-nya terasa jauh lebih premium.",
+  },
+  {
+    initials: "SW",
+    name: "Sarah Wijaya",
+    role: "Interior Client",
+    project: "Interior",
+    rating: 5,
+    testimonial:
+      "Timnya sangat membantu memilih material. Ruang keluarga kami sekarang terasa lebih hangat, rapi, dan nyaman dipakai setiap hari.",
+  },
+  {
+    initials: "MJ",
+    name: "Michael Jonathan",
+    role: "Property Investor",
+    project: "Commercial",
+    rating: 5,
+    testimonial:
+      "Komunikasinya profesional, dokumentasi progress lengkap, dan hasil akhir bangunan sesuai standar yang kami butuhkan.",
+  },
 ];
 
-const users = [...baseUsers, ...baseUsers, ...baseUsers];
-const TOTAL = baseUsers.length;
-const VISIBLE = 2;
-
 export default function Testimonials() {
-  const [current, setCurrent] = useState(TOTAL);
-  const [animated, setAnimated] = useState(true);
-  const isResetting = useRef(false);
+  const [current, setCurrent] = useState(0);
+  const touchStartX = useRef(0);
+  const active = TESTIMONIALS[current];
 
-  function slideTo(next) {
-    if (isResetting.current) return;
-    setAnimated(true);
-    setCurrent(next);
-  }
+  const nextSlide = useCallback(() => {
+    setCurrent((value) => (value + 1) % TESTIMONIALS.length);
+  }, []);
 
-  const handleTransitionEnd = useCallback(() => {
-    if (isResetting.current) return;
+  const prevSlide = useCallback(() => {
+    setCurrent((value) =>
+      value === 0 ? TESTIMONIALS.length - 1 : value - 1
+    );
+  }, []);
 
-    let resetTo = null;
-    if (current >= TOTAL * 2) resetTo = current - TOTAL;
-    else if (current < TOTAL) resetTo = current + TOTAL;
+  useEffect(() => {
+    const interval = window.setInterval(nextSlide, 6000);
 
-    if (resetTo !== null) {
-      isResetting.current = true;
-      setAnimated(false);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setCurrent(resetTo);
-          requestAnimationFrame(() => {
-            setAnimated(true);
-            isResetting.current = false;
-          });
-        });
-      });
-    }
-  }, [current]);
+    return () => window.clearInterval(interval);
+  }, [nextSlide]);
+
+  const handleTouchStart = (event) => {
+    touchStartX.current = event.changedTouches[0].screenX;
+  };
+
+  const handleTouchEnd = (event) => {
+    const delta = touchStartX.current - event.changedTouches[0].screenX;
+
+    if (delta > 50) nextSlide();
+    if (delta < -50) prevSlide();
+  };
 
   return (
-    <section id='Testimonials' className="py-20 px-4 sm:px-10 md:px-16 bg-[#f0f0f0]">
-      <div className="flex flex-col md:flex-row items-start gap-10 md:gap-12">
+    <section
+      id="testimonials"
+      className="scroll-mt-28 overflow-hidden bg-(--bg-warm) py-24"
+    >
+      <div className="mx-auto max-w-7xl px-5 sm:px-7 lg:px-10">
+        <div className="mb-14 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+          <div>
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#ead7a9] bg-(--accent-soft) px-4 py-2 text-sm font-semibold text-[#7a5a1f]">
+              <span className="h-2 w-2 rounded-full bg-(--accent)" />
+              Testimoni Client
+            </div>
 
-        {/* Kolom Kiri — Teks */}
-        <div className="w-full md:w-2/5 shrink-0">
-          <p className="text-gray-500 text-2xl leading-relaxed">
-            Testimoni
+            <h2 className="text-4xl font-black leading-tight text-[#1f1f1f] md:text-5xl">
+              Cerita client setelah project selesai.
+            </h2>
+          </div>
+
+          <p className="max-w-2xl text-base leading-relaxed text-[#5e5e5e] lg:justify-self-end">
+            Review ini merangkum hal yang paling sering dicari client:
+            komunikasi jelas, hasil rapi, dan project berjalan sesuai rencana.
           </p>
-          <h2 className="font-bold text-3xl sm:text-4xl md:text-5xl leading-tight text-gray-900 mb-4">
-            Apa kata mereka?
-          </h2>
-          <p className='text-gray-500 text-base leading-relaxed'>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Fugiat, nisi.
-          </p>
-          
         </div>
 
-        {/* Kolom Kanan — Slider */}
-        <div className="w-full md:w-3/5 flex flex-col gap-6">
+        <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
+          <div
+            className="relative overflow-hidden rounded-3xl bg-(--bg-dark) p-6 text-white shadow-[0_24px_80px_rgba(0,0,0,0.16)] sm:p-8 lg:p-10"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            <IconQuote
+              size={84}
+              stroke={1.2}
+              className="absolute right-8 top-8 text-white/10"
+            />
 
-          <div className="overflow-hidden pt-12">
-            <div
-              className="flex gap-5"
-              style={{
-                transform: `translateX(calc(-${current * (100 / VISIBLE)}% - ${current * 20 / VISIBLE}px))`,
-                transition: animated ? 'transform 500ms ease-in-out' : 'none',
-              }}
-              onTransitionEnd={handleTransitionEnd}
-            >
-              {users.map((user, i) => (
-                <div
-                  key={i}
-                  style={{ minWidth: `calc(${100 / VISIBLE}% - ${(VISIBLE - 1) * 20 / VISIBLE}px)` }}
-                  className="bg-gray-50 rounded-3xl p-6 flex flex-col items-center text-center gap-2 relative"
-                >
-                  <div className="absolute -top-10">
-                    <img
-                      src={user.photo}
-                      alt={user.name}
-                      className="w-20 h-20 rounded-full object-cover border-4 border-white shadow"
-                    />
+            <div className="relative z-10">
+              <div className="flex items-center gap-1">
+                {Array.from({ length: active.rating }).map((_, index) => (
+                  <IconStarFilled
+                    key={index}
+                    size={20}
+                    className="text-(--accent)"
+                  />
+                ))}
+              </div>
+
+              <p className="mt-8 max-w-3xl text-2xl font-semibold leading-relaxed sm:text-3xl">
+                "{active.testimonial}"
+              </p>
+
+              <div className="mt-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-[20px] bg-(--accent) text-lg font-black text-black">
+                    {active.initials}
                   </div>
-
-                  <div className="mt-10" />
-
-                  <h3 className="font-bold text-base text-gray-900">{user.name}</h3>
-                  <p className="text-gray-400 text-sm">{user.role}</p>
-
-                  <div className="flex gap-0.5">
-                    {Array.from({ length: 5 }).map((_, j) => (
-                      <IconStar
-                        key={j}
-                        size={16}
-                        className={j < user.rating ? 'text-amber-400 fill-amber-400' : 'text-gray-300 fill-gray-300'}
-                      />
-                    ))}
+                  <div>
+                    <h3 className="text-xl font-bold">{active.name}</h3>
+                    <p className="mt-1 text-sm text-white/60">
+                      {active.role} - {active.project}
+                    </p>
                   </div>
-
-                  <p className="text-gray-500 text-sm leading-relaxed mt-2">{user.testimonial}</p>
                 </div>
-              ))}
+
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    aria-label="Testimoni sebelumnya"
+                    onClick={prevSlide}
+                    className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white transition-colors hover:bg-white hover:text-black"
+                  >
+                    <IconArrowLeft size={20} />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Testimoni berikutnya"
+                    onClick={nextSlide}
+                    className="flex h-12 w-12 items-center justify-center rounded-2xl bg-(--accent) text-black transition-colors hover:bg-white"
+                  >
+                    <IconArrowRight size={20} />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-center md:justify-start gap-3">
-            <button
-              onClick={() => slideTo(current - 1)}
-              className="w-12 h-12 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center hover:bg-amber-200 transition-colors"
-            >
-              <IconArrowLeft size={20} />
-            </button>
-            <button
-              onClick={() => slideTo(current + 1)}
-              className="w-12 h-12 rounded-full bg-amber-400 text-amber-900 flex items-center justify-center hover:bg-amber-500 transition-colors"
-            >
-              <IconArrowRight size={20} />
-            </button>
-          </div>
+          <div className="grid gap-3">
+            {TESTIMONIALS.map((testimonial, index) => {
+              const selected = index === current;
 
+              return (
+                <button
+                  key={testimonial.name}
+                  type="button"
+                  onClick={() => setCurrent(index)}
+                  aria-pressed={selected}
+                  className={`flex items-center gap-4 rounded-[18px] border p-4 text-left transition-all duration-300 ${
+                    selected
+                      ? "border-amber-300 bg-white shadow-xl"
+                      : "border-[#e5dfd2] bg-white/70 hover:border-amber-200 hover:bg-white"
+                  }`}
+                >
+                  <span
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl font-black ${
+                      selected
+                        ? "bg-(--accent) text-black"
+                        : "bg-[#f2eadb] text-[#8b6a3e]"
+                    }`}
+                  >
+                    {testimonial.initials}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block font-bold text-gray-900">
+                      {testimonial.name}
+                    </span>
+                    <span className="mt-1 block text-sm text-gray-500">
+                      {testimonial.project}
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-10 grid gap-4 md:grid-cols-3">
+          <div className="rounded-[18px] bg-white p-5">
+            <p className="text-3xl font-black text-gray-900">4.9/5</p>
+            <p className="mt-2 text-sm text-gray-500">Rata-rata kepuasan client</p>
+          </div>
+          <div className="rounded-[18px] bg-white p-5">
+            <p className="text-3xl font-black text-gray-900">150+</p>
+            <p className="mt-2 text-sm text-gray-500">Client sudah dilayani</p>
+          </div>
+          <div className="rounded-[18px] bg-white p-5">
+            <p className="text-3xl font-black text-gray-900">On-time</p>
+            <p className="mt-2 text-sm text-gray-500">Progress dikawal terjadwal</p>
+          </div>
         </div>
       </div>
     </section>
