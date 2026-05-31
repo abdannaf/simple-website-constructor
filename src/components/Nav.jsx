@@ -90,7 +90,7 @@ export default function DexloryNavbar() {
 
               <span className="leading-none">
                 <span className="block text-xl font-black tracking-tight text-white sm:text-2xl">
-                    [Your Logo]
+                    Nusa Build
                 </span>
                 <span className="mt-1 block text-[10px] uppercase tracking-[0.32em] text-white/45">
                 Kontraktor
@@ -167,9 +167,9 @@ export default function DexloryNavbar() {
         >
           <div className="flex items-center justify-between border-b border-white/10 p-6">
             <div>
-              <p className="text-2xl font-black text-white">DEXLORY</p>
+              <p className="text-2xl font-black text-white">NusaBuild</p>
               <p className="mt-1 text-xs uppercase tracking-[0.3em] text-white/40">
-                Interior Studio
+                Kontraktor
               </p>
             </div>
 

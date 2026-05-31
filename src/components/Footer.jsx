@@ -31,7 +31,7 @@ export default function Footer() {
   const kontak = [
     { icon: <IconMapPin size={15} />, text: "Jl. Konstruksi No. 12, Jakarta" },
     { icon: <IconPhone size={15} />, text: "+62 812-3456-7890" },
-    { icon: <IconMail size={15} />, text: "hello@[YourName]" },
+    { icon: <IconMail size={15} />, text: "hello@nusabuild.com" },
     { icon: <IconClock size={15} />, text: "Senin-Sabtu, 08.00-17.00" },
   ];
 
@@ -50,7 +50,7 @@ export default function Footer() {
       <div className="mb-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <p className="text-xl font-bold text-white">
-            [Your Logo]<span className="text-(--accent)"> Build</span>
+            Nusa<span className="text-(--accent)"> Build</span>
           </p>
           <p className="mb-5 mt-3 max-w-xs text-sm leading-relaxed text-gray-400">
             Kami hadir untuk mewujudkan setiap proyek bangunan Anda dengan
@@ -117,7 +117,7 @@ export default function Footer() {
 
       <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-800 pt-6 sm:flex-row">
         <p className="text-xs text-gray-500">
-          © 2026 [Your Logo] Build. Semua hak dilindungi.
+          © 2026 Nusa Build. Semua hak dilindungi.
         </p>
 
         <div className="flex gap-3">
